@@ -1,9 +1,6 @@
 const { body } = require("express-validator");
 
 exports.post= [
-  body("_id")
-    .isInt()
-    .withMessage("ID should be an integer"),
   body("name")
     .isString()
     .withMessage("Name should be a string"),
@@ -16,9 +13,6 @@ exports.post= [
 ];
 
 exports.update  = [
-  body("_id")
-      .isInt()
-      .withMessage("id should be integer"),
   body("fullname")
       .optional()
       .isAlpha()

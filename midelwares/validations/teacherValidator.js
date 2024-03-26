@@ -1,11 +1,19 @@
 const { body} = require("express-validator");
 const teacher = require("./../../model/teachermodel")
-
 const bcrypt = require("bcryptjs");
+
+//insert new teacher
 exports.post = [
     body("_id")
         .isMongoId()
-        .withMessage("teacher id should be a valid ObjectId"),
+        .withMessage("teacher id should be a valid ObjectId")
+        .custom(async (value) => {
+          const existingTeacher = await teacher.findById(value);
+          if (existingTeacher) {
+              throw new Error('ID already exists');
+          }
+          return true;
+      }),
     body("fullname")
         .isString()
         .withMessage("teacher name should be string")
@@ -20,15 +28,34 @@ exports.post = [
         .notEmpty()
         .withMessage("email required")
         .isEmail()
-        .withMessage("email should be string"),
+        .withMessage("email should be string")
+        .custom(async (value, { req }) => {
+          const existingTeacher = await teacher.findOne({ email: value });
+          if (existingTeacher && existingTeacher._id.toString() !== req.body._id) {
+              throw new Error('Email already exists');
+          }
+          return true;
+        }),
     body("image")
         .isString()
         .withMessage("image should be string")
 ];
 
+// update teacher info
 exports.update = [
     body("_id").isMongoId()
-      .withMessage("teacher id should be a valid ObjectId"),
+      .withMessage("teacher id should be a valid ObjectId")
+      .custom(async (value, { req }) => {
+        const existingTeacher = await teacher.findOne({ _id: value });
+        if (!existingTeacher) {
+            throw new Error('Teacher with this ID does not exist');
+        } else {
+            if (existingTeacher._id.toString() !== req.body._id) {
+                throw new Error('Another teacher with this ID already exists');
+            }
+        }
+        return true;
+    }),
     body("fullname")
       .optional()
       .isString()
@@ -39,22 +66,37 @@ exports.update = [
         .optional()
         .isLength({ min: 2 }) 
         .withMessage("password should be at least 8 characters long")
-        .matches(/\d/) // Password should contain at least one digit
+        .matches(/\d/) 
         .withMessage("password should contain at least one digit"),
     body("email")
       .optional()
       .isEmail()
-      .withMessage("email should be string"),
+      .withMessage("email should be string")
+      .custom(async (value, { req }) => {
+        const existingTeacher = await teacher.findOne({ email: value });
+        if (existingTeacher && existingTeacher._id.toString() !== req.body._id) {
+            throw new Error('Email already exists');
+        }
+        return true;
+      }),
     body("image")
       .optional()
       .isString()
       .withMessage("image should be string")
 ];
 
+//delete teacher
 exports.delete = [
-    body("_id").isMongoId().withMessage("teacher id should be a valid ObjectId"),
+    body("_id").isMongoId().withMessage("teacher id should be a valid ObjectId")
+    .custom(async (value, { req }) => {
+      const existingTeacher = await teacher.findOne({ _id: value });
+      if (!existingTeacher) {
+          throw new Error('Teacher with this ID does not exist');
+      }
+    }),
 ];
 
+// change password
 exports.changepassvalidation = [
 
   (req, res, next) => {
