@@ -36,9 +36,12 @@ exports.post = [
           }
           return true;
         }),
-    body("image")
-        .isString()
-        .withMessage("image should be string")
+        (request, response, next) => {
+          if (!request.file) {
+              return next(new Error('Image is required'));
+          }
+          return next();
+      },
 ];
 
 // update teacher info
@@ -79,10 +82,6 @@ exports.update = [
         }
         return true;
       }),
-    body("image")
-      .optional()
-      .isString()
-      .withMessage("image should be string")
 ];
 
 //delete teacher

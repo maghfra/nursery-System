@@ -10,7 +10,7 @@ const schema = new mongoose.Schema({
     },
     image: String,
     isSupervisor: { type: String, enum: ['supervisor', 'teacher'], default: 'teacher' },
-    role: { type: String, enum: ['admin', 'teacher'], default: 'teacher' }
+    // role: { type: String, enum: ['admin', 'teacher'], default: 'teacher' }
 });
 
 schema.pre('save', async function(next){

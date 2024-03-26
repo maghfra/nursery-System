@@ -33,9 +33,8 @@ exports.addteacher=(request,response,next)=>{
         fullname:request.body.fullname,
         password:request.body.password,
         email:request.body.email,
-        image:request.body.image,
+        image:request.file.filename,
         isSupervisor:request.body.isSupervisor,
-        role:request.body.role
     })
     object.save()
         .then(data => {

@@ -51,6 +51,7 @@ server.get("/nurserySystem", (request, response) => {
 
 //endpionts
 server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
 server.use(loginRoute);
 server.use(authMW);
 server.use(teacherRoute);
