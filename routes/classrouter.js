@@ -1,17 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("./../controller/classcontroller");
-const { insertValidator } = require("./../midelwares/validations/classvaildation/classvaildator");
-const { updateValidator } = require("./../midelwares/validations/classvaildation/updatevaildator");
+const Validator = require("./../midelwares/validations/classvaildator");
 const validatonResult = require("./../midelwares/validations/resultvaildation");
 const isAuth = require("../midelwares/authMW")
 
 router.route("/class")
     .all(isAuth, isAuth.checkAdmin)
     .get(controller.getAllCkasses)
-    .post(insertValidator, validatonResult, controller.addclass)
-    .patch(updateValidator, validatonResult, controller.updateclass)
-    .delete(controller.deleteclass)
+    .post(Validator.post, validatonResult, controller.addclass)
+    .patch(Validator.update, validatonResult, controller.updateclass)
+    .delete(Validator.delete, validatonResult, controller.deleteclass)
 
 router.route("/class/child/:_id").get(controller.childreninfo);
 router.route("/class/teacher/:_id").get(controller.supervisorinfo);

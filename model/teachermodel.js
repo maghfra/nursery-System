@@ -4,7 +4,10 @@ const schema = new mongoose.Schema({
     _id: mongoose.Types.ObjectId,
     fullname: String,
     password: String,
-    email: { type :String, },
+    email:{
+        type: String,
+        unique: true
+    },
     image: String,
     isSupervisor: { type: String, enum: ['supervisor', 'teacher'], default: 'teacher' },
     role: { type: String, enum: ['admin', 'teacher'], default: 'teacher' }
