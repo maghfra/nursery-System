@@ -6,8 +6,8 @@ Teachers should register first, and administrator will add children to the syste
 the system will have only one administrator
 the admin can log in using
 {
-       "password": "test23",
-        "email": "test3@test.com"
+     "password": "pass123",
+        "email": "email@test.com"
 }
 
 
