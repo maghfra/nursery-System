@@ -1,4 +1,6 @@
+const { request, response } = require("express");
 const teacher = require("./../model/teachermodel");
+const bcrypt = require("bcryptjs")
 exports.getAllTeacher=(request,response,next)=>{
     teacher.find({})
     .then((data)=>{
@@ -60,7 +62,6 @@ exports.updateteacher=(request,response,next)=>{
     teacher.findByIdAndUpdate(request.body._id,{
         $set:{
             fullname:request.body.fullname,
-            password:request.body.password,
             email:request.body.email,
             image:request.body.image
         }
@@ -75,6 +76,27 @@ exports.updateteacher=(request,response,next)=>{
     })
     // response.status(200).json({data:"update"});
 };
+
+exports.changepassword= async (request,response,next)=>{
+        try {
+            // Hash the password 
+            const hashedPassword = await bcrypt.hash(request.body.password, 10);
+            // Update the document in MongoDB with the hashed password
+            const updatedTeacher = await teacher.findByIdAndUpdate(request.params._id, {
+                $set: {
+                    password: hashedPassword, 
+                }
+            });
+            if (!updatedTeacher) {
+                throw new Error("Teacher not found..!");
+            }
+            response.status(200).json({ message: "Updated..!", data: updatedTeacher });
+        } catch (error) {
+            next(error);
+        }
+     
+}
+
 exports.deleteteacher=(request,response,next)=>{
     teacher.findByIdAndDelete(request.body._id)
             .then(data=>{

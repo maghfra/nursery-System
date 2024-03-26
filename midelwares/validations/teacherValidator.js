@@ -1,5 +1,7 @@
 const { body} = require("express-validator");
+const teacher = require("./../../model/teachermodel")
 
+const bcrypt = require("bcryptjs");
 exports.post = [
     body("_id")
         .isMongoId()
@@ -12,7 +14,7 @@ exports.post = [
     body("password")
         .isLength({ min: 2 }) 
         .withMessage("password should be at least 8 characters long")
-        .matches(/\d/) // Password should contain at least one digit
+        .matches(/\d/)
         .withMessage("password should contain at least one digit"),
     body("email")
         .notEmpty()
@@ -52,3 +54,34 @@ exports.update = [
 exports.delete = [
     body("_id").isMongoId().withMessage("teacher id should be a valid ObjectId"),
 ];
+
+exports.changepassvalidation = [
+
+  (req, res, next) => {
+    console.log("Request Body:", req.body);
+    console.log("Request Params:", req.params._id);
+    next();
+},
+  body("currentpassword").notEmpty().withMessage("current password required"),
+  body("password").notEmpty().withMessage("new password required")
+      .custom(async (val, { req }) => {
+          
+              const user = await teacher.findById(req.params._id) // Change to req.body._id
+              if (!user) {
+                  throw new Error("There is no teacher with this id");
+              }
+              
+              const isCorrectPassword = await bcrypt.compare(req.body.currentpassword, user.password);
+              if (!isCorrectPassword) {
+                  throw new Error("Incorrect current password");
+              }
+              if (val !== req.body.confirmpassword){
+                throw new Error("Incorrect confirm password");
+              }
+              return true;
+      }),
+
+  body("confirmpassword").notEmpty().withMessage("confirm password required")
+];
+
+ 
