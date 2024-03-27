@@ -1,6 +1,8 @@
 const { request, response } = require("express");
 const teacher = require("./../model/teachermodel");
+const Class = require("./../model/classmodel");
 const bcrypt = require("bcryptjs")
+
 exports.getAllTeacher=(request,response,next)=>{
     teacher.find({})
     .then((data)=>{
@@ -96,18 +98,36 @@ exports.changepassword= async (request,response,next)=>{
      
 }
 
-exports.deleteteacher=(request,response,next)=>{
-    teacher.findByIdAndDelete(request.body._id)
-            .then(data=>{
-                if(data == null)
-                throw new Error ("teacher not found...!")
-            response.status(200).json({message:"deleted"})
-            })
-            .catch(error=>{
-                next(error);
-            })
-    // response.status(200).json({data:"delete"});
+exports.deleteteacher = async (request, response, next) => {
+    try {
+        const teacherId = request.body._id;
+
+        // Check if the teacher is a supervisor in any class
+        const supervisorClasses = await Class.find({ supervisor: teacherId });
+
+        if (supervisorClasses.length > 0) {
+            // If the teacher is a supervisor in any class
+            // Assign a default supervisor to those classes
+            const defaultSupervisorId = "9905e1d5aba24ed841f6fe52"; 
+            const updatePromises = supervisorClasses.map(async (classObj) => {
+                classObj.supervisor = defaultSupervisorId;
+                await classObj.save();
+            });
+            await Promise.all(updatePromises);
+        }
+
+        // Delete the teacher
+        const deletedTeacher = await teacher.findByIdAndDelete(teacherId);
+
+        if (!deletedTeacher) {
+            throw new Error("Teacher not found...!");
+        }
+        response.status(200).json({ message: "Teacher deleted successfully" });
+    } catch (error) {
+        next(error);
+    }
 };
+
 
 
 exports.getAllSupervisors =(request,response,next)=>{

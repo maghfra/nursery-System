@@ -3,6 +3,8 @@ const morgan = require('morgan');
 const cors = require("cors");
 const mongoose = require("mongoose");
 const dot_env = require("dotenv").config();
+const multer= require("multer");
+const path= require("path");
 
 //routes
 
@@ -52,6 +54,7 @@ server.get("/nurserySystem", (request, response) => {
 //endpionts
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
+server.use("/images", express.static(path.join(__dirname, "./images")))
 server.use(loginRoute);
 server.use(authMW);
 server.use(teacherRoute);
