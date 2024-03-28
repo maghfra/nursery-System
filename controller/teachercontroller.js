@@ -117,7 +117,7 @@ exports.deleteteacher = async (request, response, next) => {
         }
 
         // Delete the teacher
-        const deletedTeacher = await teacher.findByIdAndDelete(teacherId);
+        const deletedTeacher = await teacher.findByIdAndDelete(request.params._id);
 
         if (!deletedTeacher) {
             throw new Error("Teacher not found...!");

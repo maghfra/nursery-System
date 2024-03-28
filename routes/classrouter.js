@@ -34,18 +34,109 @@ const isAuth = require("../midelwares/authMW")
  *         description: Unauthorized
  *       "403":
  *         description: Forbidden
- */
-router.route("/class")
-    .all(isAuth, isAuth.checkAdmin)
-    .get(controller.getAllCkasses)
-    .post(Validator.post, validatonResult, controller.addclass)
-    .patch(Validator.update, validatonResult, controller.updateclass)
-    .delete(Validator.delete, validatonResult, controller.deleteclass)
-
-router.route("/class/child/:_id").get(controller.childreninfo);
-router.route("/class/teacher/:_id").get(controller.supervisorinfo);
-/**
- * @swagger
+ *   post:
+ *     summary: Add a new class
+ *     description: Add a new class to the system.
+ *     tags: [Classes]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/class'
+ *     responses:
+ *       "201":
+ *         description: Class created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/class'
+ *       "400":
+ *         description: Bad request
+ *       "401":
+ *         description: Unauthorized
+ *       "403":
+ *         description: Forbidden
+ *   patch:
+ *     summary: Update a class
+ *     description: Update an existing class in the system.
+ *     tags: [Classes]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/class'
+ *     responses:
+ *       "200":
+ *         description: Class updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/class'
+ *       "400":
+ *         description: Bad request
+ *       "401":
+ *         description: Unauthorized
+ *       "403":
+ *         description: Forbidden
+ *   
+ * 
+ * /class/child/{_id}:
+ *   get:
+ *     summary: Retrieve children information of a class
+ *     description: Retrieve information about children belonging to a specific class by class ID.
+ *     tags: [Classes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: _id
+ *         required: true
+ *         description: ID of the class to retrieve children information.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       "200":
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/child'
+ *       "401":
+ *         description: Unauthorized
+ *       "403":
+ *         description: Forbidden
+ * 
+ * /class/teacher/{_id}:
+ *   get:
+ *     summary: Retrieve supervisor information of a class
+ *     description: Retrieve information about the supervisor of a specific class by class ID.
+ *     tags: [Classes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: _id
+ *         required: true
+ *         description: ID of the class to retrieve supervisor information.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       "200":
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Teacher'
+ *       "401":
+ *         description: Unauthorized
+ *       "403":
+ *         description: Forbidden
  * /class/{_id}:
  *   get:
  *     summary: Retrieve a class by ID
@@ -71,6 +162,40 @@ router.route("/class/teacher/:_id").get(controller.supervisorinfo);
  *         description: Unauthorized
  *       "403":
  *         description: Forbidden
+ *   delete:
+ *     summary: Delete a class
+ *     description: Delete an existing class from the system.
+ *     tags: [Classes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: _id
+ *         required: true
+ *         description: ID of the child to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       "200":
+ *         description: Teacher deleted successfully
+ *       "401":
+ *         description: Unauthorized
+ *       "403":
+ *         description: Forbidden
  */
-router.route("/class/:_id").get(controller.getClassById);
+
+router.route("/class")
+    .all(isAuth, isAuth.checkAdmin)
+    .get(controller.getAllCkasses)
+    .post(Validator.post, validatonResult, controller.addclass)
+    .patch(Validator.update, validatonResult, controller.updateclass)
+    
+
+router.route("/class/child/:_id").get(controller.childreninfo);
+router.route("/class/teacher/:_id").get(controller.supervisorinfo);
+router
+    .route("/class/:_id")
+    .all(isAuth, isAuth.checkAdmin)
+    .get(controller.getClassById)
+    .delete(Validator.delete, validatonResult, controller.deleteclass)
 module.exports = router;

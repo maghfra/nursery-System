@@ -75,7 +75,7 @@ exports.updatechild = (request, response, next) => {
 
 exports.deletechild = async (request, response, next) => {
     try {
-        const deletedChild = await child.findByIdAndDelete(request.body._id);
+        const deletedChild = await child.findByIdAndDelete(request.params._id);
         if (!deletedChild) {
             throw new Error("Child not found");
         }

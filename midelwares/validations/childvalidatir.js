@@ -1,4 +1,4 @@
-const { body } = require("express-validator");
+const {param, body } = require("express-validator");
 
 exports.post = [
   body("fullName")
@@ -53,5 +53,5 @@ exports.update = [
 ];
 
 exports.delete = [
-  body("_id").isInt().withMessage("Id Shoud be Number"),
+  param("_id").isInt().withMessage("Id Shoud be Number"),
 ]

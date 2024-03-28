@@ -24,7 +24,7 @@ const swaggerOptions = {
             _id: {
             type: 'string',
             format: 'objectId',
-           description: "The auto-generated ID of the teacher. Must be a valid ObjectId."
+           description: "ID of the teacher. Must be a valid ObjectId."
             },
             fullname: {
               type: "string",
@@ -39,7 +39,9 @@ const swaggerOptions = {
               description: "The Email of the teacher.",
             },
             image: {
+
               type: "string",
+              format: "binary",
               description:
                 "The URL of the image associated with the teacher.",
             },

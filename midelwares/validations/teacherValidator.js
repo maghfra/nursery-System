@@ -1,4 +1,4 @@
-const { body} = require("express-validator");
+const {  param, body} = require("express-validator");
 const teacher = require("./../../model/teachermodel")
 const bcrypt = require("bcryptjs");
 
@@ -86,7 +86,7 @@ exports.update = [
 
 //delete teacher
 exports.delete = [
-    body("_id").isMongoId().withMessage("teacher id should be a valid ObjectId")
+  param("_id").isMongoId().withMessage("teacher id should be a valid ObjectId")
     .custom(async (value, { req }) => {
       const existingTeacher = await teacher.findOne({ _id: value });
       if (!existingTeacher) {

@@ -98,7 +98,7 @@ exports.updateclass = async (request, response, next) => {
 
 
 exports.deleteclass=(request,response,next)=>{
-    Class.deleteOne({_id:request.body._id})
+    Class.deleteOne({_id:request.params._id})
     .then(data=>{
         if(data == null)
         throw new Error ("class not found...!")
