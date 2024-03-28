@@ -14,7 +14,7 @@ exports.getAllChildren=(request,response,next)=>{
 };
 
 exports.getChildById=(request,response,next)=>{
-    child.findOne({_id:request.params.id})
+    child.findOne({_id:request.params._id})
     .then(data=>{
         if(data == null)
         throw new Error("child not found..!")

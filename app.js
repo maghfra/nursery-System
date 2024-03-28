@@ -5,20 +5,26 @@ const mongoose = require("mongoose");
 const dot_env = require("dotenv").config();
 const multer= require("multer");
 const path= require("path");
+const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+const swaggerOptions = require('./swagger')
 
 //routes
 
 const teacherRoute=require("./routes/teacherrouter");
 const childRoute=require("./routes/childrouter")
 const classRoute=require("./routes/classrouter")
-const loginRoute=require("./routes/authenticatin");
+ const loginRoute=require("./routes/authenticatin");
 const authMW = require("./midelwares/authMW");
+
+
 
 //open sever
 const server=express();
 //determine port
 const port = process.env.PORT|| process.env.portNumber;
-
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+server.use("/api-docs", swaggerUi.serve ,swaggerUi.setup(swaggerSpec));
 //connect to db
 mongoose.connect(process.env.DBurl)
         .then(()=>{
@@ -51,15 +57,23 @@ server.get("/nurserySystem", (request, response) => {
     response.json({link: request.url, method: request.method});
 });
 
+
+
+// Swagger setup
+
+
+
 //endpionts
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 server.use("/images", express.static(path.join(__dirname, "./images")))
-server.use(loginRoute);
+ server.use(loginRoute);
 server.use(authMW);
 server.use(teacherRoute);
 server.use(childRoute);
 server.use(classRoute);
+
+
 
 // Not Found
 server.use((request,response)=>{
