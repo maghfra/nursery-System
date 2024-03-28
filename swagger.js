@@ -2,9 +2,9 @@ const swaggerOptions = {
   swaggerDefinition: {
     openapi: "3.0.0",
     info: {
-      title: "Teacher API",
+      title: "NURESERY-SYSTEM API",
       version: "1.0.0",
-      description: "API documentation for managing teachers",
+      description: "API documentation for NURESERY-SYSTEM",
       contact: {
         name: "maghfera hassan",
         email: "maghferahassan47@gmail.com",

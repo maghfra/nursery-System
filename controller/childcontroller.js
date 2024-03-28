@@ -82,8 +82,8 @@ exports.deletechild = async (request, response, next) => {
 
         // Update classes to remove the deleted child
         await Class.updateMany(
-            { children: request.body._id },
-            { $pull: { children: request.body._id } }
+            { children: request.params._id },
+            { $pull: { children: request.params._id } }
         );
 
         response.status(200).json({ message: "Child deleted successfully" });
