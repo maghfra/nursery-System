@@ -31,7 +31,6 @@ exports.getTeacherById=(request,response,next)=>{
 
 exports.addteacher=(request,response,next)=>{
     let object = new teacher({
-        _id:request.body._id,
         fullname:request.body.fullname,
         password:request.body.password,
         email:request.body.email,
@@ -48,9 +47,9 @@ exports.addteacher=(request,response,next)=>{
     // response.status(200).json({data:"added"});
 };
 
-exports.updateteacher=(request,response,next)=>{
+exports.updateteacher= async (request,response,next)=>{
     // teacher.updateOne(
-    //     {_id:request.body._id},
+    //     {_id:request.params._id},
     //     {
     //         $set:{
     //             fullname:request.body.fullname,
@@ -60,22 +59,31 @@ exports.updateteacher=(request,response,next)=>{
     //         }
     //     }
     // )
-    teacher.findByIdAndUpdate(request.body._id,{
-        $set:{
-            fullname:request.body.fullname,
-            email:request.body.email,
-            image:request.body.image
+    try {
+        const hashedPassword = await bcrypt.hash(request.body.password, 10);
+
+        // Find and update the teacher
+        const updatedTeacher = await teacher.findByIdAndUpdate(
+            request.params._id,
+            {
+                $set: {
+                    fullname: request.body.fullname,
+                    email: request.body.email,
+                    password: hashedPassword,
+                    image: request.body.image
+                }
+            },
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedTeacher) {
+            throw new Error("Teacher not found..!");
         }
-    })
-    .then(data=>{
-        if(data==null)
-        throw new Error("teacher not found..!")
-    response.status(200).json({message:"updated..!",data})
-    })
-    .catch(error=>{
+
+        response.status(200).json({ message: "Updated..!", data: updatedTeacher });
+    } catch (error) {
         next(error);
-    })
-    // response.status(200).json({data:"update"});
+    }
 };
 
 exports.changepassword= async (request,response,next)=>{
@@ -100,7 +108,7 @@ exports.changepassword= async (request,response,next)=>{
 
 exports.deleteteacher = async (request, response, next) => {
     try {
-        const teacherId = request.body._id;
+        const teacherId = request.params._id;
 
         // Check if the teacher is a supervisor in any class
         const supervisorClasses = await Class.find({ supervisor: teacherId });

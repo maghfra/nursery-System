@@ -77,7 +77,7 @@ exports.updateclass = async (request, response, next) => {
             throw new Error("One or more children not found");
         }
         const updatedClass = await Class.findOneAndUpdate(
-            { _id: request.body._id },
+            { _id: request.params._id },
             {
                 $set: {
                     name: request.body.name,

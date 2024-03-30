@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs")
 const schema = new mongoose.Schema({
-    _id: mongoose.Types.ObjectId,
+    
     fullname: String,
     password: String,
     email:{

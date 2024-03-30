@@ -57,12 +57,44 @@ const isAuth = require("../midelwares/authMW")
  *         description: Unauthorized
  *       "403":
  *         description: Forbidden
+ *   
+ *   
+ * /child/{_id}:
+ *   get:
+ *     summary: Retrieve a child by ID
+ *     description: Retrieve a child's details by its ID.
+ *     tags: [Children]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: _id
+ *         required: true
+ *         description: ID of the child to retrieve.
+ *     schema:
+ *           type: string
+ *     responses:
+ *       "200":
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/child'
+ *       "401":
+ *         description: Unauthorized
+ *       "403":
+ *         description: Forbidden
  *   patch:
  *     summary: Update a child
  *     description: Update an existing child in the system.
  *     tags: [Children]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: _id
+ *         required: true
+ *         description: ID of the child to update.
  *     requestBody:
  *       required: true
  *       content:
@@ -78,32 +110,6 @@ const isAuth = require("../midelwares/authMW")
  *               $ref: '#/components/schemas/child'
  *       "400":
  *         description: Bad request
- *       "401":
- *         description: Unauthorized
- *       "403":
- *         description: Forbidden
- *   
- * /child/{_id}:
- *   get:
- *     summary: Retrieve a child by ID
- *     description: Retrieve a child's details by its ID.
- *     tags: [Children]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: _id
- *         required: true
- *         description: ID of the child to retrieve.
- *         schema:
- *           type: string
- *     responses:
- *       "200":
- *         description: Successful operation
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/child'
  *       "401":
  *         description: Unauthorized
  *       "403":
@@ -135,10 +141,11 @@ router
     .all(isAuth, isAuth.checkAdmin)
     .get(controller.getAllChildren)
     .post(Validator.post, validatonResult, controller.addchild)
-    .patch(Validator.update, validatonResult, controller.updatechild)
+    
     
 router
 .route("/child/:_id")
 .get(isAuth,isAuth.checkAdmin,controller.getChildById)
+.patch(Validator.update, validatonResult, controller.updatechild)
 .delete(Validator.delete,validatonResult, controller.deletechild)    
 module.exports = router;    

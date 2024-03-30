@@ -59,31 +59,7 @@ const isAuth = require("../midelwares/authMW")
  *         description: Unauthorized
  *       "403":
  *         description: Forbidden
- *   patch:
- *     summary: Update a class
- *     description: Update an existing class in the system.
- *     tags: [Classes]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/class'
- *     responses:
- *       "200":
- *         description: Class updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/class'
- *       "400":
- *         description: Bad request
- *       "401":
- *         description: Unauthorized
- *       "403":
- *         description: Forbidden
+ *   
  *   
  * 
  * /class/child/{_id}:
@@ -162,6 +138,36 @@ const isAuth = require("../midelwares/authMW")
  *         description: Unauthorized
  *       "403":
  *         description: Forbidden
+ *   patch:
+ *     summary: Update a class
+ *     description: Update an existing class in the system.
+ *     tags: [Classes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: _id
+ *         required: true
+ *         description: ID of the child to update.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/class'
+ *     responses:
+ *       "200":
+ *         description: Class updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/class'
+ *       "400":
+ *         description: Bad request
+ *       "401":
+ *         description: Unauthorized
+ *       "403":
+ *         description: Forbidden
  *   delete:
  *     summary: Delete a class
  *     description: Delete an existing class from the system.
@@ -188,7 +194,7 @@ router.route("/class")
     .all(isAuth, isAuth.checkAdmin)
     .get(controller.getAllCkasses)
     .post(Validator.post, validatonResult, controller.addclass)
-    .patch(Validator.update, validatonResult, controller.updateclass)
+    
     
 
 router.route("/class/child/:_id").get(controller.childreninfo);
@@ -197,5 +203,6 @@ router
     .route("/class/:_id")
     .all(isAuth, isAuth.checkAdmin)
     .get(controller.getClassById)
+    .patch(Validator.update, validatonResult, controller.updateclass)
     .delete(Validator.delete, validatonResult, controller.deleteclass)
 module.exports = router;

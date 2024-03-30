@@ -83,25 +83,7 @@ const upload = multer({ storage, fileFilter });
  *       "403":
  *         description: Forbidden
  * 
- *   patch:
- *     summary: Update a teacher's information
- *     description: Update a teacher's information in the system.
- *     tags: [Teachers]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             $ref: '#/components/schemas/Teacher'
- *     responses:
- *       "200":
- *         description: Teacher updated successfully
- *       "401":
- *         description: Unauthorized
- *       "403":
- *         description: Forbidden
+ *  
  *   
  * 
  * /teachers/supervisors:
@@ -146,6 +128,30 @@ const upload = multer({ storage, fileFilter });
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Teacher'
+ *       "401":
+ *         description: Unauthorized
+ *       "403":
+ *         description: Forbidden
+ *   patch:
+ *     summary: Update a teacher's information
+ *     description: Update a teacher's information in the system.
+ *     tags: [Teachers]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: _id
+ *         required: true
+ *         description: ID of the teacher to update his info.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             $ref: '#/components/schemas/Teacher'
+ *     responses:
+ *       "200":
+ *         description: Teacher updated successfully
  *       "401":
  *         description: Unauthorized
  *       "403":
@@ -223,14 +229,17 @@ router
     .all(isAuth)
     .get(isAuth.checkAdmin, controller.getAllTeacher)
     .post(isAuth.checkAdminOrTeacher,upload.single('image'), Validator.post, validatonResult, controller.addteacher)
-    .patch(isAuth.checkAdminOrTeacher,upload.single('image'), Validator.update, validatonResult, controller.updateteacher)
-
-router.route("/teachers/:_id").delete(isAuth.checkAdmin, Validator.delete, validatonResult, controller.deleteteacher)
+    
 //change password endpoint     
 router.patch("/teachers/changepassword/:_id",Validator.changepassvalidation,validatonResult, controller.changepassword);
 //get all seupervisors
 router.route("/teachers/supervisors").get(isAuth.checkAdmin, controller.getAllSupervisors);
 // get teacher by id
-router.route("/teachers/:_id").get(isAuth.checkAdminOrTeacher, controller.getTeacherById);
+router
+.route("/teachers/:_id")
+.all(isAuth)
+.get(isAuth.checkAdminOrTeacher, controller.getTeacherById)
+.patch(isAuth.checkAdminOrTeacher,upload.single('image'), Validator.update, validatonResult, controller.updateteacher)
+.delete(isAuth.checkAdmin, Validator.delete, validatonResult, controller.deleteteacher)
 
 module.exports = router;

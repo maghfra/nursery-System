@@ -5,5 +5,9 @@ Teachers should register first, and administrator will add children to the syste
 
 the system will have only one administrator "static admin"
 
-admin _id="9905e1d5aba24ed841f6fe52"
+admin info:
+{
+  "email": "admin@example.com",
+  "password": "adminpassword1"
+}
 

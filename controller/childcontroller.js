@@ -48,7 +48,7 @@ exports.addchild=(request,response,next)=>{
 };
 
 exports.updatechild = (request, response, next) => {
-    child.updateOne({_id:request.body._id},{
+    child.updateOne({_id:request.params._id},{
         $set: {
             fullName:request.body.fullName,
         age:request.body.age,

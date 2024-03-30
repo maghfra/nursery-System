@@ -21,11 +21,7 @@ const swaggerOptions = {
         Teacher: {
           type: "object",
           properties: {
-            _id: {
-            type: 'string',
-            format: 'objectId',
-           description: "ID of the teacher. Must be a valid ObjectId."
-            },
+            
             fullname: {
               type: "string",
               description: "The full name of the teacher.",
@@ -57,10 +53,6 @@ const swaggerOptions = {
         child:{
           type: 'object',
           properties: {
-            _id: {
-              type: 'number',
-              description: 'The auto-incremented ID of the child.',
-            },
             fullName: {
               type: 'string',
               description: 'The full name of the child.',
@@ -98,10 +90,6 @@ const swaggerOptions = {
         class: {
           type: 'object',
           properties: {
-            _id: {
-              type: 'number',
-              description: 'The auto-incremented ID of the class.',
-            },
             name: {
               type: 'string',
               description: 'The name of the class.',

@@ -4,16 +4,6 @@ const bcrypt = require("bcryptjs");
 
 //insert new teacher
 exports.post = [
-    body("_id")
-        .isMongoId()
-        .withMessage("teacher id should be a valid ObjectId")
-        .custom(async (value) => {
-          const existingTeacher = await teacher.findById(value);
-          if (existingTeacher) {
-              throw new Error('ID already exists');
-          }
-          return true;
-      }),
     body("fullname")
         .isString()
         .withMessage("teacher name should be string")
@@ -46,19 +36,6 @@ exports.post = [
 
 // update teacher info
 exports.update = [
-    body("_id").isMongoId()
-      .withMessage("teacher id should be a valid ObjectId")
-      .custom(async (value, { req }) => {
-        const existingTeacher = await teacher.findOne({ _id: value });
-        if (!existingTeacher) {
-            throw new Error('Teacher with this ID does not exist');
-        } else {
-            if (existingTeacher._id.toString() !== req.body._id) {
-                throw new Error('Another teacher with this ID already exists');
-            }
-        }
-        return true;
-    }),
     body("fullname")
       .optional()
       .isString()
@@ -75,13 +52,6 @@ exports.update = [
       .optional()
       .isEmail()
       .withMessage("email should be string")
-      .custom(async (value, { req }) => {
-        const existingTeacher = await teacher.findOne({ email: value });
-        if (existingTeacher && existingTeacher._id.toString() !== req.body._id) {
-            throw new Error('Email already exists');
-        }
-        return true;
-      }),
 ];
 
 //delete teacher
